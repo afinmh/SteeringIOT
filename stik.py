@@ -45,7 +45,7 @@ def control_motor():
         pygame.event.pump()  # Perbarui event joystick
 
         # Tombol untuk memulai kontrol (Button 9)
-        if joystick.get_button(9):
+        if joystick.get_button(23):
             if not running:
                 running = True
                 print("Kontrol dimulai!")
@@ -65,22 +65,22 @@ def control_motor():
 
         if running:
             # Baca tombol gas (misalnya tombol A pada joystick)
-            if joystick.get_button(0):  # Tombol A
+            if joystick.get_button(4):  # Tombol A
                 if direction != "maju":
                     direction = "maju"
                     client.publish(TOPIC_DIRECTION, "maju")
                     print("Motor maju")
-            elif joystick.get_button(2):  # Tombol B
+            elif joystick.get_button(5):  # Tombol B
                 if direction != "mundur":
                     direction = "mundur"
                     client.publish(TOPIC_DIRECTION, "mundur")
                     print("Motor mundur")
 
             # Baca arah dari joystick analog (misalnya Y-axis)
-            steer_axis = joystick.get_axis(2)  # Sumbu Y
+            steer_axis = joystick.get_axis(0)  # Sumbu Y
 
             # Threshold untuk menentukan perubahan
-            THRESHOLD = 0.1
+            THRESHOLD = 0.5
 
             # Logika untuk steer
             if steer_axis > THRESHOLD:  # Joystick ke kanan
