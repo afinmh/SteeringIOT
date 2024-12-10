@@ -1,6 +1,6 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <WebServer.h>
+#include <HTTPClient.h>
 
 // Konfigurasi WiFi
 const char* ssid = "ICT_LAB";
@@ -17,7 +17,6 @@ const char* topic_distance = "motorffitenass/distance";
 // Objek WiFi, MQTT, dan Web Server
 WiFiClient espClient;
 PubSubClient client(espClient);
-WebServer server(80);
 
 // Pin motor driver
 const int motorPin1 = 26;  // GPIO 26
@@ -51,9 +50,7 @@ void setupWiFi() {
 // Fungsi membaca jarak dari sensor ultrasonik
 float readUltrasonicDistance() {
   digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
 
   long duration = pulseIn(echoPin, HIGH);
@@ -108,21 +105,22 @@ void reconnect() {
   }
 }
 
-// Halaman utama untuk web server
-void handleRoot() {
-  String html = "<html>\
-                  <head><title>Motor & Sensor Status</title></head>\
-                  <body>\
-                    <h1>Status Kontrol</h1>\
-                    <p><b>WiFi IP:</b> " + WiFi.localIP().toString() + "</p>\
-                    <p><b>MQTT Status:</b> " + (client.connected() ? "Connected" : "Disconnected") + "</p>\
-                    <p><b>Gas:</b> " + String(gasPressed ? "ON" : "OFF") + "</p>\
-                    <p><b>Direction:</b> " + direction + "</p>\
-                    <p><b>Steering:</b> " + steer + "</p>\
-                    <p><b>Distance (cm):</b> " + String(distance, 2) + " cm</p>\
-                  </body>\
-                </html>";
-  server.send(200, "text/html", html);
+void sendDataToDjango(String mqttStatus, String gas, String direction, String steer, float distance) {
+  HTTPClient http;
+  String serverName = "http://192.168.1.241:8000/update_status";
+
+  http.begin(serverName);
+  http.addHeader("Content-Type", "application/json");
+
+  String jsonData = "{\"mqtt_status\":\"" + mqttStatus + "\",\"gas\":\"" + gas + "\",\"direction\":\"" + direction + "\",\"steer\":\"" + steer + "\",\"distance\":" + distance + "}";
+  
+  int httpResponseCode = http.POST(jsonData);
+  if (httpResponseCode > 0) {
+    Serial.println("Data sent successfully: " + String(httpResponseCode));
+  } else {
+    Serial.println("Error sending data");
+  }
+  http.end();
 }
 
 void setup() {
@@ -139,10 +137,6 @@ void setup() {
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-
-  server.on("/", handleRoot);
-  server.begin();
-  Serial.println("Web server started!");
 }
 
 void loop() {
@@ -150,7 +144,6 @@ void loop() {
     reconnect();
   }
   client.loop();
-  server.handleClient();
 
   // Kontrol motor berdasarkan status gas dan arah
   if (gasPressed) {
@@ -179,10 +172,13 @@ void loop() {
   }
 
   // Update jarak setiap 10 detik
-  if (millis() - lastDistanceUpdate > 10000) {
+  if (millis() - lastDistanceUpdate > 1000) {
     distance = readUltrasonicDistance();
     Serial.println("Distance: " + String(distance) + " cm");
     client.publish(topic_distance, String(distance, 2).c_str());
     lastDistanceUpdate = millis();
   }
+
+  sendDataToDjango("Connected", gasPressed ? "start" : "stop", direction, steer, distance);
+
 }

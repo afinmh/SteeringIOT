@@ -32,7 +32,7 @@ def on_connect(client, userdata, flags, rc):
 
 client.on_connect = on_connect
 client.connect(BROKER, PORT, 60)
-client.loop_start()  # Memastikan event listener berjalan
+client.loop_start()  # Memulai loop MQTT secara terpisah
 
 # Fungsi utama kontrol
 def control_motor():
@@ -45,7 +45,7 @@ def control_motor():
         pygame.event.pump()  # Perbarui event joystick
 
         # Tombol untuk memulai kontrol (Button 9)
-        if joystick.get_button(23):
+        if joystick.get_button(9):
             if not running:
                 running = True
                 print("Kontrol dimulai!")
@@ -77,7 +77,7 @@ def control_motor():
                     print("Motor mundur")
 
             # Baca arah dari joystick analog (misalnya Y-axis)
-            steer_axis = joystick.get_axis(0)  # Sumbu Y
+            steer_axis = joystick.get_axis(0)  # Sumbu X (sumbu horizontal)
 
             # Threshold untuk menentukan perubahan
             THRESHOLD = 0.5
@@ -100,7 +100,7 @@ def control_motor():
                     print("Netral")
 
             # Baca pedal gas (misalnya Y-axis)
-            pedal_axis = joystick.get_axis(1)  # Sumbu Y
+            pedal_axis = joystick.get_axis(1)  # Sumbu Y (sumbu vertikal)
 
             if pedal_axis < -0.5:  # Joystick ke atas
                 if not gas_status:
@@ -112,8 +112,6 @@ def control_motor():
                     gas_status = False
                     client.publish(TOPIC_GAS, "stop")
                     print("Gas dimatikan!")
-
-            time.sleep(0.1)  # Debounce loop
 
 # Jalankan fungsi kontrol
 try:
