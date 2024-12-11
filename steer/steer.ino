@@ -13,6 +13,7 @@ const char* topic_direction = "motorffitenass/direction";
 const char* topic_gas = "motorffitenass/gas";
 const char* topic_steer = "motorffitenass/steer";
 const char* topic_distance = "motorffitenass/distance";
+const char* topic_sound = "motorffitenass/sound";
 
 // Objek WiFi, MQTT, dan Web Server
 WiFiClient espClient;
@@ -28,7 +29,20 @@ const int motorPin4 = 23;
 const int trigPin = 18;
 const int echoPin = 19;
 
+// Pin untuk sensor ultrasonik
+#define TRIG_PIN 5  // Pin Trig ke GPIO5 ESP32
+#define ECHO_PIN 18 // Pin Echo ke GPIO18 ESP32
+
+// Setup komunikasi serial dengan DFPlayer
+HardwareSerial mySerial(1);  // Menggunakan UART1 (atau UART2, jika diperlukan)
+DFRobotDFPlayerMini myDFPlayer;
+
+// Variabel untuk status musik dan DFPlayer
+bool isPlaying = false;
+bool isDFPlayerReady = false;
+
 // Status kontrol
+String sound = "";
 String steer = "";
 String direction = "";  // "maju" atau "mundur"
 bool gasPressed = false;

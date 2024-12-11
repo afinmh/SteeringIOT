@@ -8,6 +8,7 @@ PORT = 1883
 TOPIC_DIRECTION = "motorffitenass/direction"
 TOPIC_GAS = "motorffitenass/gas"
 TOPIC_STEER = "motorffitenass/steer"
+TOPIC_SOUND = "motorffitenass/sound"
 
 # Inisialisasi Joystick
 pygame.init()
@@ -49,6 +50,14 @@ def control_motor():
             if not running:
                 running = True
                 print("Kontrol dimulai!")
+                
+        if joystick.get_button(6):
+            client.publish(TOPIC_SOUND, "3")
+            print("Telolet")
+        
+        if joystick.get_button(10):
+            client.publish(TOPIC_SOUND, "Stop")
+            print("Stop")
 
         # Tombol untuk menghentikan kontrol (Button 8)
         if joystick.get_button(8):
