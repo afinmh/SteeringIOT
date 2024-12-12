@@ -41,6 +41,7 @@ def control_motor():
     steer = ""
     direction = ""
     running = False  # Status untuk memulai/menghentikan kontrol
+    music = 3
 
     while True:
         pygame.event.pump()  # Perbarui event joystick
@@ -52,8 +53,18 @@ def control_motor():
                 print("Kontrol dimulai!")
                 
         if joystick.get_button(6):
-            client.publish(TOPIC_SOUND, "3")
-            print("Telolet")
+            client.publish(TOPIC_SOUND, music)
+            print(f"Telolet {music}")
+
+        if joystick.get_button("plus"):
+            if music < 7:  # Ensure music does not exceed 7
+                music += 1
+                print(f"Music {music}")
+
+        if joystick.get_button("mines"):
+            if music > 3:  # Ensure music does not go below 3
+                music -= 1
+                print(f"Music {music}")
         
         if joystick.get_button(10):
             client.publish(TOPIC_SOUND, "Stop")
