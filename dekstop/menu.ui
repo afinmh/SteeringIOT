@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>875</width>
+    <height>567</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QPushButton" name="start">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>318</y>
+     <width>201</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">ackground-color: transparent;
+border-image: url(:off.png);
+background: none;
+border: none;
+background-repeat: none;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>game.png</normaloff>game.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>150</width>
+     <height>150</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="exit">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>310</y>
+     <width>171</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">ackground-color: transparent;
+border-image: url(:off.png);
+background: none;
+border: none;
+background-repeat: none;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>game-play.png</normaloff>game-play.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>150</width>
+     <height>150</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>881</width>
+     <height>571</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Papyrus</family>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>mobil.jpg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>120</y>
+     <width>451</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Century</family>
+     <pointsize>45</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>IoT Fire Fighter</string>
+   </property>
+  </widget>
+  <zorder>label</zorder>
+  <zorder>start</zorder>
+  <zorder>exit</zorder>
+  <zorder>label_3</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
