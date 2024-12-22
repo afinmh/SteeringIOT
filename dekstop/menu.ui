@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="start">
+  <widget class="QPushButton" name="close">
    <property name="geometry">
     <rect>
      <x>450</x>
@@ -43,7 +43,7 @@ background-repeat: none;</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="exit">
+  <widget class="QPushButton" name="menu2">
    <property name="geometry">
     <rect>
      <x>280</x>
@@ -117,8 +117,8 @@ background-repeat: none;</string>
    </property>
   </widget>
   <zorder>label</zorder>
-  <zorder>start</zorder>
-  <zorder>exit</zorder>
+  <zorder>close</zorder>
+  <zorder>menu2</zorder>
   <zorder>label_3</zorder>
  </widget>
  <resources/>

@@ -224,6 +224,7 @@ class MainApp(QMainWindow):
         if ret:
             # Konversi frame ke RGB
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.flip(frame, 1)
             # Buat QImage dari frame
             h, w, ch = frame.shape
             qimg = QImage(frame.data, w, h, ch * w, QImage.Format_RGB888)
