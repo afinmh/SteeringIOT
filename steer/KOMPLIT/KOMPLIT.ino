@@ -2,21 +2,20 @@
 #include <PubSubClient.h>
 #include <HTTPClient.h>
 #include <DFRobotDFPlayerMini.h>
+#include <WebSocketsServer.h>
+#include <ArduinoJson.h>
 
 // Konfigurasi WiFi
-const char* ssid = "ICT-LAB WORKSPACE";
-const char* password = "ICTLAB2024";
+const char* ssid = "Wong Ayu";
+const char* password = "4sehat5sempurna";
 
 // Konfigurasi MQTT
 const char* mqtt_server = "broker.hivemq.com";
 const int mqtt_port = 1883;
-const char* topic_direction = "motorffitenass/direction";
-const char* topic_gas = "motorffitenass/gas";
-const char* topic_steer = "motorffitenass/steer";
-const char* topic_distance = "motorffitenass/distance";
-const char* topic_sound = "motorffitenass/sound";
+const char* topic_sensor = "motorffitenass/sensor";
 
 // Objek WiFi, MQTT, dan Web Server
+WebSocketsServer webSocket = WebSocketsServer(81);
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -25,6 +24,7 @@ const int motorPin1 = 26;  // GPIO 26
 const int motorPin2 = 27;  // GPIO 27
 const int motorPin3 = 22;
 const int motorPin4 = 23;
+const int ledPin = 2;  
 
 // Pin sensor ultrasonik
 #define TRIG_PIN 5  // Pin Trig ke GPIO5 ESP32
@@ -41,7 +41,11 @@ bool isDFPlayerReady = false;
 // Status kontrol
 String steer = "";
 String direction = "";  // "maju" atau "mundur"
-bool gasPressed = false;
+String gass = "";
+String pompa = "OFF";
+String strobo = "OFF";
+String speaker = "OFF";
+int batre = 100;
 float distance = 0.0; // Variabel jarak
 unsigned long lastDistanceUpdate = 0; // Waktu pembaruan terakhir
 
@@ -67,37 +71,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     message += (char)payload[i];
   }
 
-  Serial.println("Pesan diterima: " + String(topic) + " -> " + message);
-
-  if (String(topic) == topic_direction) {
-    direction = message;
-    Serial.println("Direction set to: " + direction);
-  }
-
-  if (String(topic) == topic_steer) {
-    steer = message;
-    Serial.println("Steering set to: " + steer);
-  }
-
-  if (String(topic) == topic_gas) {
-    gasPressed = (message == "start");
-    Serial.println("Gas: " + message);
-  }
-
-  if (String(topic) == topic_sound) {
-    if (isDFPlayerReady) {
-      int soundIndex = message.toInt();
-      if (soundIndex > 0) {
-        Serial.println("Memainkan musik ke-" + String(soundIndex));
-        myDFPlayer.play(soundIndex);
-      } else {
-        myDFPlayer.stop();
-        Serial.println("Input sound tidak valid: " + message);
-      }
-    } else {
-      Serial.println("DFPlayer belum siap");
-    }
-  }
+  Serial.println("Pesan diterima: -> " + message);
 }
 
 // Fungsi untuk menghubungkan ke broker MQTT
@@ -109,16 +83,83 @@ void setupMQTT() {
     Serial.print("Connecting to MQTT...");
     if (client.connect("ESP32_Controller")) {
       Serial.println("Connected!");
-      client.subscribe(topic_direction);
-      client.subscribe(topic_gas);
-      client.subscribe(topic_steer);
-      client.subscribe(topic_sound);
+      client.subscribe(topic_sensor);
     } else {
       Serial.print("Failed, rc=");
       Serial.print(client.state());
       Serial.println(" Retry in 5 seconds...");
       delay(5000);
     }
+  }
+}
+
+void handleWebSocketMessage(uint8_t num, uint8_t* payload, size_t length) {
+  String message = "";
+  for (size_t i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+  StaticJsonDocument<200> doc;
+
+  DeserializationError error = deserializeJson(doc, message);
+
+  if (error) {
+    Serial.println("Deserialization failed: " + String(error.c_str()));
+    return;
+  }
+
+  const char* topic = doc["topic"];
+  const char* value = doc["value"];
+
+  if (String(topic) == "gas") {
+    gass = String(value);
+    Serial.println("Gas set to: " + gass);
+  } else if (String(topic) == "direction") {
+    direction = String(value);
+    Serial.println("Direction set to: " + direction);
+  } else if (String(topic) == "strobo") {
+    strobo = String(value);
+    Serial.println("Strobo: " + strobo);
+  } else if (String(topic) == "pompa") {
+    pompa = String(value);
+    Serial.println("Pompa: " + pompa);
+  } else if (String(topic) == "steer") {
+    steer = String(value);
+    Serial.println("Steering set to: " + steer);
+  } else if (String(topic) == "sound") {
+    if (isDFPlayerReady) {
+      String valueString = String(value);
+      int soundIndex = valueString.toInt();
+      Serial.println(soundIndex);
+      if (soundIndex > 0) {
+        Serial.println("Memainkan musik ke-" + String(soundIndex));
+        myDFPlayer.play(soundIndex);
+        speaker = "ON";
+      } else {
+        myDFPlayer.stop();
+        Serial.println("Input sound tidak valid: " + String(value));
+        speaker = "OFF";
+      }
+    } else {
+      Serial.println("DFPlayer belum siap");
+    }
+  }
+}
+
+
+// Fungsi untuk menangani event WebSocket
+void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
+  switch (type) {
+    case WStype_TEXT:
+      handleWebSocketMessage(num, payload, length);
+      break;
+    case WStype_DISCONNECTED:
+      Serial.println("Client disconnected");
+      break;
+    case WStype_CONNECTED:
+      Serial.println("Client connected");
+      break;
+    default:
+      break;
   }
 }
 
@@ -160,39 +201,46 @@ void setup() {
   pinMode(motorPin2, OUTPUT);
   pinMode(motorPin3, OUTPUT);
   pinMode(motorPin4, OUTPUT);
+  pinMode(ledPin, OUTPUT);
 
   mySerial.begin(9600, SERIAL_8N1, 16, 17);
 
   setupWiFi();
   setupMQTT();
   initializeDFPlayer();
+  webSocket.begin();
+  webSocket.onEvent(onWebSocketEvent);
 }
 
 void loop() {
+  webSocket.loop();
   if (!client.connected()) {
     setupMQTT();
   }
   client.loop();
 
-  // Kontrol motor berdasarkan status gas dan arah
-  if (gasPressed) {
-    if (direction == "maju") {
-      digitalWrite(motorPin1, HIGH);
-      digitalWrite(motorPin2, LOW);
-    } else if (direction == "mundur") {
-      digitalWrite(motorPin1, LOW);
-      digitalWrite(motorPin2, HIGH);
-    }
+  // Kontrol motor berdasarkan nilai direction, steer, dan gas
+  if (direction == "maju" && gass == "start") {
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(motorPin1, HIGH);
+    digitalWrite(motorPin2, LOW);
+  } else if (direction == "mundur" && gass == "start") {
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(motorPin1, LOW);
+    digitalWrite(motorPin2, HIGH);
   } else {
+    digitalWrite(ledPin, LOW);
     digitalWrite(motorPin1, LOW);
     digitalWrite(motorPin2, LOW);
   }
 
   // Kontrol steer
   if (steer == "kanan") {
+    digitalWrite(ledPin, HIGH);
     digitalWrite(motorPin3, HIGH);
     digitalWrite(motorPin4, LOW);
   } else if (steer == "kiri") {
+    digitalWrite(ledPin, LOW);
     digitalWrite(motorPin3, LOW);
     digitalWrite(motorPin4, HIGH);
   } else {
@@ -204,17 +252,20 @@ void loop() {
   if (millis() - lastDistanceUpdate > 1000) {
     distance = readUltrasonicDistance();
     Serial.println("Distance: " + String(distance) + " cm");
-    client.publish(topic_distance, String(distance, 2).c_str());
+    String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
+    client.publish(topic_sensor, jsonData.c_str());
+    batre -= 1;
     lastDistanceUpdate = millis();
   }
 
-  if (distance < 50.0 && !isPlaying) {
-    Serial.println("Jarak kurang dari 50 cm, memainkan musik 2...");
-    myDFPlayer.play(2);  // Mainkan musik 2
-    isPlaying = true;
-  } else if (distance >= 50.0 && isPlaying) {
-    Serial.println("Jarak lebih dari 50 cm, menghentikan musik...");
-    myDFPlayer.stop();  // Hentikan musik
-    isPlaying = false;
-  }
+
+  // if (distance < 50.0 && !isPlaying) {
+  //   Serial.println("Jarak kurang dari 50 cm, memainkan musik 2...");
+  //   myDFPlayer.play(2);  // Mainkan musik 2
+  //   isPlaying = true;
+  // } else if (distance >= 50.0 && isPlaying) {
+  //   Serial.println("Jarak lebih dari 50 cm, menghentikan musik...");
+  //   myDFPlayer.stop();  // Hentikan musik
+  //   isPlaying = false;
+  // }
 }

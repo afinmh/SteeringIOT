@@ -56,12 +56,12 @@ def control_motor():
             client.publish(TOPIC_SOUND, music)
             print(f"Telolet {music}")
 
-        if joystick.get_button("plus"):
+        if joystick.get_button(1):
             if music < 7:  # Ensure music does not exceed 7
                 music += 1
                 print(f"Music {music}")
 
-        if joystick.get_button("mines"):
+        if joystick.get_button(1):
             if music > 3:  # Ensure music does not go below 3
                 music -= 1
                 print(f"Music {music}")
@@ -122,7 +122,7 @@ def control_motor():
             # Baca pedal gas (misalnya Y-axis)
             pedal_axis = joystick.get_axis(1)  # Sumbu Y
 
-            if pedal_axis < -0.5:  # Joystick ke atas
+            if pedal_axis < -0.1:  # Joystick ke atas
                 if not gas_status:
                     gas_status = True
                     client.publish(TOPIC_GAS, "start")
