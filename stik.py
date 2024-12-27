@@ -53,12 +53,12 @@ def control_motor():
             running = False
 
         if running:
-            if joystick.get_button(4):  # L1
+            if joystick.get_button(5):  # R1
                 if direction != "maju":
                     direction = "maju"
                     ws.send(json.dumps({"topic": "direction", "value": "maju"}))
                     print("Motor maju")
-            elif joystick.get_button(5):  # R1
+            elif joystick.get_button(4):  # L1
                 if direction != "mundur":
                     direction = "mundur"
                     ws.send(json.dumps({"topic": "direction", "value": "mundur"}))
@@ -99,27 +99,27 @@ def control_motor():
                     print(f"Telolet {music}")   
                 button_pressed = True
 
-            if joystick.get_button(6):  # L2 Next lagu
+            if joystick.get_button(7):  # L2 Next lagu
                 if not button_pressed:
                     if music < 7:
                         music += 1
                         print(f"Music {music}")
                     button_pressed = True
 
-            if joystick.get_button(7):  # R2 Prev lagu
+            if joystick.get_button(6):  # R2 Prev lagu
                 if not button_pressed:
                     if music > 3:
                         music -= 1
                         print(f"Music {music}")
                     button_pressed = True
                     
-            if joystick.get_button(3):
+            if joystick.get_button(3): #Kotak
                 if not button_pressed: 
                     ws.send(json.dumps({"topic": "sound", "value": "Stop"}))
                     print("Stop")
                 button_pressed = True
                 
-            if joystick.get_button(0):
+            if joystick.get_button(0): #Segitiga
                 if not button_pressed: 
                     if strobo == "OFF":
                         ws.send(json.dumps({"topic": "strobo", "value": "ON"}))
@@ -131,7 +131,7 @@ def control_motor():
                         print("Strobo OFF")
                 button_pressed = True
                 
-            if joystick.get_button(2):
+            if joystick.get_button(2): # Silang
                 if not button_pressed: 
                     if pompa == "OFF":
                         ws.send(json.dumps({"topic": "pompa", "value": "ON"}))

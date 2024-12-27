@@ -26,9 +26,13 @@ const int motorPin3 = 22;
 const int motorPin4 = 23;
 const int ledPin = 2;  
 
+
 // Pin sensor ultrasonik
-#define TRIG_PIN 5  // Pin Trig ke GPIO5 ESP32
-#define ECHO_PIN 18 // Pin Echo ke GPIO18 ESP32
+#define TRIG_PIN 5 
+#define ECHO_PIN 18 
+
+#define PUMP_RELAY_PIN 32
+#define STROBE_RELAY_PIN 33
 
 // Setup komunikasi serial dengan DFPlayer
 HardwareSerial mySerial(1);  // Menggunakan UART1 (RX=16, TX=17)
@@ -202,6 +206,12 @@ void setup() {
   pinMode(motorPin3, OUTPUT);
   pinMode(motorPin4, OUTPUT);
   pinMode(ledPin, OUTPUT);
+  pinMode(PUMP_RELAY_PIN, OUTPUT);
+  pinMode(STROBE_RELAY_PIN, OUTPUT);
+
+  // Pastikan relay awalnya dalam keadaan off
+  digitalWrite(PUMP_RELAY_PIN, LOW);
+  digitalWrite(STROBE_RELAY_PIN, LOW);
 
   mySerial.begin(9600, SERIAL_8N1, 16, 17);
 
@@ -248,6 +258,15 @@ void loop() {
     digitalWrite(motorPin4, LOW);
   }
 
+  if (pompa == "ON") {
+    digitalWrite(PUMP_RELAY_PIN, HIGH);
+  } else if (strobo == "ON") {
+    digitalWrite(STROBE_RELAY_PIN, HIGH);
+  } else {
+    digitalWrite(STROBE_RELAY_PIN, LOW);
+    digitalWrite(PUMP_RELAY_PIN, LOW);
+  }
+
   // Update jarak setiap 10 detik
   if (millis() - lastDistanceUpdate > 1000) {
     distance = readUltrasonicDistance();
@@ -262,10 +281,12 @@ void loop() {
   // if (distance < 50.0 && !isPlaying) {
   //   Serial.println("Jarak kurang dari 50 cm, memainkan musik 2...");
   //   myDFPlayer.play(2);  // Mainkan musik 2
+  //   speaker = "ON";
   //   isPlaying = true;
   // } else if (distance >= 50.0 && isPlaying) {
   //   Serial.println("Jarak lebih dari 50 cm, menghentikan musik...");
   //   myDFPlayer.stop();  // Hentikan musik
+  //   speaker = "OFF";
   //   isPlaying = false;
   // }
 }
