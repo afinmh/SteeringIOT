@@ -49,6 +49,7 @@ String gass = "";
 String pompa = "OFF";
 String strobo = "OFF";
 String speaker = "OFF";
+String fire = "Aman";
 int batre = 100;
 float distance = 0.0; // Variabel jarak
 unsigned long lastDistanceUpdate = 0; // Waktu pembaruan terakhir
@@ -76,6 +77,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 
   Serial.println("Pesan diterima: -> " + message);
+  Serial.println("IP Address: " + WiFi.localIP().toString());
 }
 
 // Fungsi untuk menghubungkan ke broker MQTT
@@ -129,6 +131,9 @@ void handleWebSocketMessage(uint8_t num, uint8_t* payload, size_t length) {
   } else if (String(topic) == "steer") {
     steer = String(value);
     Serial.println("Steering set to: " + steer);
+  } else if (String(topic) == "fire") {
+    fire = String(value);
+    Serial.println("Deteksi: " + fire);
   } else if (String(topic) == "sound") {
     if (isDFPlayerReady) {
       String valueString = String(value);
@@ -271,7 +276,7 @@ void loop() {
   if (millis() - lastDistanceUpdate > 1000) {
     distance = readUltrasonicDistance();
     Serial.println("Distance: " + String(distance) + " cm");
-    String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
+    String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"fire\":\"" + fire + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
     client.publish(topic_sensor, jsonData.c_str());
     batre -= 1;
     lastDistanceUpdate = millis();

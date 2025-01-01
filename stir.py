@@ -1,16 +1,10 @@
-import paho.mqtt.client as mqtt
 import pygame
 import time
+import websocket
+import json
 
-# Konfigurasi MQTT
-BROKER = "broker.hivemq.com"
-PORT = 1883
-TOPIC_DIRECTION = "motorffitenass/direction"
-TOPIC_GAS = "motorffitenass/gas"
-TOPIC_STEER = "motorffitenass/steer"
-TOPIC_SOUND = "motorffitenass/sound"
+WS_URL = "ws://192.168.1.8:81" 
 
-# Inisialisasi Joystick
 pygame.init()
 pygame.joystick.init()
 
@@ -22,80 +16,76 @@ joystick = pygame.joystick.Joystick(0)
 joystick.init()
 print(f"Joystick terdeteksi: {joystick.get_name()}")
 
-# Inisialisasi MQTT
-client = mqtt.Client(protocol=mqtt.MQTTv311)
+try:
+    ws = websocket.create_connection(WS_URL)
+    print("Terhubung ke WebSocket!")
+except Exception as e:
+    print(f"Gagal terhubung ke WebSocket: {e}")
+    exit()
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        print("Terhubung ke broker MQTT!")
-    else:
-        print(f"Terhubung gagal dengan kode: {rc}")
-
-client.on_connect = on_connect
-client.connect(BROKER, PORT, 60)
-client.loop_start()  # Memastikan event listener berjalan
-
-# Fungsi utama kontrol
 def control_motor():
     gas_status = False
     steer = ""
     direction = ""
-    running = False  # Status untuk memulai/menghentikan kontrol
+    running = False 
     music = 3
+    button_pressed = False
+    pompa = "OFF"
+    strobo = "OFF"
 
     while True:
         pygame.event.pump()  # Perbarui event joystick
 
-        # Tombol untuk memulai kontrol (Button 9)
-        if joystick.get_button(23):
+        if joystick.get_button(23): #Start
             if not running:
                 running = True
                 print("Kontrol dimulai!")
-                
-        if joystick.get_button(6):
-            client.publish(TOPIC_SOUND, music)
-            print(f"Telolet {music}")
 
-        if joystick.get_button(1):
-            if music < 7:  # Ensure music does not exceed 7
-                music += 1
-                print(f"Music {music}")
-
-        if joystick.get_button(1):
-            if music > 3:  # Ensure music does not go below 3
-                music -= 1
-                print(f"Music {music}")
-        
-        if joystick.get_button(10):
-            client.publish(TOPIC_SOUND, "Stop")
-            print("Stop")
-
-        # Tombol untuk menghentikan kontrol (Button 8)
-        if joystick.get_button(8):
+        if joystick.get_button(8): #Select
             print("Menghentikan kontrol...")
-            # Reset nilai
             gas_status = False
             steer = ""
             direction = ""
-            # Publish reset ke topik masing-masing
-            client.publish(TOPIC_GAS, "stop")
-            client.publish(TOPIC_DIRECTION, "")
-            client.publish(TOPIC_STEER, "")
+            ws.send(json.dumps({"topic": "gas", "value": "stop"}))
+            ws.send(json.dumps({"topic": "direction", "value": ""}))
+            ws.send(json.dumps({"topic": "steer", "value": ""}))
             print("Nilai reset dan program dihentikan.")
+            running = False
 
         if running:
-            # Baca tombol gas (misalnya tombol A pada joystick)
+            if joystick.get_button(6): #Button Kecil
+                if not button_pressed: 
+                    ws.send(json.dumps({"topic": "sound", "value": str(music)}))
+                    print(f"Telolet {music}")   
+                button_pressed = True
+
+            if joystick.get_button(1): #+
+                if not button_pressed:
+                    if music < 7:
+                        music += 1
+                        print(f"Music {music}")
+                    button_pressed = True
+
+        
+            if joystick.get_button(10): #-
+                if not button_pressed:
+                    if music > 3:
+                        music -= 1
+                        print(f"Music {music}")
+                    button_pressed = True
+                
             if joystick.get_button(4):  # Tombol A
                 if direction != "maju":
                     direction = "maju"
-                    client.publish(TOPIC_DIRECTION, "maju")
+                    ws.send(json.dumps({"topic": "direction", "value": "maju"}))
                     print("Motor maju")
+                    
             elif joystick.get_button(5):  # Tombol B
                 if direction != "mundur":
                     direction = "mundur"
-                    client.publish(TOPIC_DIRECTION, "mundur")
+                    ws.send(json.dumps({"topic": "direction", "value": "mundur"}))
                     print("Motor mundur")
-
+                    
             # Baca arah dari joystick analog (misalnya Y-axis)
             steer_axis = joystick.get_axis(0)  # Sumbu Y
 
@@ -106,17 +96,17 @@ def control_motor():
             if steer_axis > THRESHOLD:  # Joystick ke kanan
                 if steer != "kanan":
                     steer = "kanan"
-                    client.publish(TOPIC_STEER, "kanan")
+                    ws.send(json.dumps({"topic": "steer", "value": "kanan"}))
                     print("Belok Kanan")
             elif steer_axis < -THRESHOLD:  # Joystick ke kiri
                 if steer != "kiri":
                     steer = "kiri"
-                    client.publish(TOPIC_STEER, "kiri")
+                    ws.send(json.dumps({"topic": "steer", "value": "kiri"}))
                     print("Belok Kiri")
             else:  # Joystick di tengah atau netral
                 if steer != "netral":
                     steer = "netral"
-                    client.publish(TOPIC_STEER, "netral")
+                    ws.send(json.dumps({"topic": "steer", "value": "netral"}))
                     print("Netral")
 
             # Baca pedal gas (misalnya Y-axis)
@@ -125,15 +115,47 @@ def control_motor():
             if pedal_axis < -0.1:  # Joystick ke atas
                 if not gas_status:
                     gas_status = True
-                    client.publish(TOPIC_GAS, "start")
+                    ws.send(json.dumps({"topic": "gas", "value": "start"}))
                     print("Gas dinyalakan!")
             else:
                 if gas_status:
                     gas_status = False
-                    client.publish(TOPIC_GAS, "stop")
+                    ws.send(json.dumps({"topic": "gas", "value": "stop"}))
                     print("Gas dimatikan!")
-
-            time.sleep(0.1)  # Debounce loop
+                    
+            if joystick.get_button(3): #Kotak
+                if not button_pressed: 
+                    ws.send(json.dumps({"topic": "sound", "value": "Stop"}))
+                    print("Stop")
+                button_pressed = True
+                
+            if joystick.get_button(0): #Segitiga
+                if not button_pressed: 
+                    if strobo == "OFF":
+                        ws.send(json.dumps({"topic": "strobo", "value": "ON"}))
+                        strobo = "ON"
+                        print("Strobo ON")
+                    elif strobo == "ON":
+                        ws.send(json.dumps({"topic": "strobo", "value": "OFF"}))
+                        strobo = "OFF"
+                        print("Strobo OFF")
+                button_pressed = True
+                
+            if joystick.get_button(2): # Silang
+                if not button_pressed: 
+                    if pompa == "OFF":
+                        ws.send(json.dumps({"topic": "pompa", "value": "ON"}))
+                        print("Pompa ON")
+                        pompa = "ON"
+                    elif pompa == "ON":
+                        ws.send(json.dumps({"topic": "pompa", "value": "OFF"}))
+                        print("Pompa OFF")
+                        pompa = "OFF"
+                button_pressed = True
+                
+            if not joystick.get_button(6) and not joystick.get_button(7) and not joystick.get_button(1)  and not joystick.get_button(3)  and not joystick.get_button(0) and not joystick.get_button(2):
+                button_pressed = False
+                
 
 # Jalankan fungsi kontrol
 try:
@@ -142,4 +164,4 @@ except KeyboardInterrupt:
     print("\nKontrol dihentikan.")
 finally:
     pygame.quit()
-    client.disconnect()
+    ws.close()
