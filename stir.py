@@ -3,8 +3,7 @@ import time
 import websocket
 import json
 
-WS_URL = "ws://192.168.1.8:81" 
-
+WS_URL = "ws://192.168.1.243:81" 
 pygame.init()
 pygame.joystick.init()
 
@@ -41,7 +40,7 @@ def control_motor():
                 running = True
                 print("Kontrol dimulai!")
 
-        if joystick.get_button(8): #Select
+        if joystick.get_button(24): #Button PS
             print("Menghentikan kontrol...")
             gas_status = False
             steer = ""
@@ -53,13 +52,13 @@ def control_motor():
             running = False
 
         if running:
-            if joystick.get_button(6): #Button Kecil
+            if joystick.get_button(2): #Lingkaran
                 if not button_pressed: 
                     ws.send(json.dumps({"topic": "sound", "value": str(music)}))
                     print(f"Telolet {music}")   
                 button_pressed = True
 
-            if joystick.get_button(1): #+
+            if joystick.get_button(4): #Tangan Kanan
                 if not button_pressed:
                     if music < 7:
                         music += 1
@@ -67,52 +66,47 @@ def control_motor():
                     button_pressed = True
 
         
-            if joystick.get_button(10): #-
+            if joystick.get_button(5): #Tangan Kiri
                 if not button_pressed:
                     if music > 3:
                         music -= 1
                         print(f"Music {music}")
                     button_pressed = True
                 
-            if joystick.get_button(4):  # Tombol A
+            if joystick.get_button(14) or joystick.get_button(12) or joystick.get_button(16):  #Kedepan
                 if direction != "maju":
                     direction = "maju"
                     ws.send(json.dumps({"topic": "direction", "value": "maju"}))
                     print("Motor maju")
                     
-            elif joystick.get_button(5):  # Tombol B
+            elif joystick.get_button(13) or joystick.get_button(15) or joystick.get_button(17):  # Kebelakang
                 if direction != "mundur":
                     direction = "mundur"
                     ws.send(json.dumps({"topic": "direction", "value": "mundur"}))
                     print("Motor mundur")
                     
-            # Baca arah dari joystick analog (misalnya Y-axis)
             steer_axis = joystick.get_axis(0)  # Sumbu Y
-
-            # Threshold untuk menentukan perubahan
             THRESHOLD = 0.5
 
             # Logika untuk steer
-            if steer_axis > THRESHOLD:  # Joystick ke kanan
+            if steer_axis > THRESHOLD:  # Steer ke Kanan
                 if steer != "kanan":
                     steer = "kanan"
                     ws.send(json.dumps({"topic": "steer", "value": "kanan"}))
                     print("Belok Kanan")
-            elif steer_axis < -THRESHOLD:  # Joystick ke kiri
+            elif steer_axis < -THRESHOLD:  # Steer ke kiri
                 if steer != "kiri":
                     steer = "kiri"
                     ws.send(json.dumps({"topic": "steer", "value": "kiri"}))
                     print("Belok Kiri")
-            else:  # Joystick di tengah atau netral
+            else:  # Steer di tengah atau netral
                 if steer != "netral":
                     steer = "netral"
                     ws.send(json.dumps({"topic": "steer", "value": "netral"}))
                     print("Netral")
 
-            # Baca pedal gas (misalnya Y-axis)
             pedal_axis = joystick.get_axis(1)  # Sumbu Y
-
-            if pedal_axis < -0.1:  # Joystick ke atas
+            if pedal_axis < -0.1:  # Gass ditekan
                 if not gas_status:
                     gas_status = True
                     ws.send(json.dumps({"topic": "gas", "value": "start"}))
@@ -123,13 +117,13 @@ def control_motor():
                     ws.send(json.dumps({"topic": "gas", "value": "stop"}))
                     print("Gas dimatikan!")
                     
-            if joystick.get_button(3): #Kotak
+            if joystick.get_button(1): #Kotak
                 if not button_pressed: 
                     ws.send(json.dumps({"topic": "sound", "value": "Stop"}))
                     print("Stop")
                 button_pressed = True
                 
-            if joystick.get_button(0): #Segitiga
+            if joystick.get_button(3): #Segitiga
                 if not button_pressed: 
                     if strobo == "OFF":
                         ws.send(json.dumps({"topic": "strobo", "value": "ON"}))
@@ -141,7 +135,7 @@ def control_motor():
                         print("Strobo OFF")
                 button_pressed = True
                 
-            if joystick.get_button(2): # Silang
+            if joystick.get_button(0): # Silang
                 if not button_pressed: 
                     if pompa == "OFF":
                         ws.send(json.dumps({"topic": "pompa", "value": "ON"}))

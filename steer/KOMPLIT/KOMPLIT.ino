@@ -6,8 +6,8 @@
 #include <ArduinoJson.h>
 
 // Konfigurasi WiFi
-const char* ssid = "Wong Ayu";
-const char* password = "4sehat5sempurna";
+const char* ssid = "ICT-LAB WORKSPACE";
+const char* password = "ICTLAB2024";
 
 // Konfigurasi MQTT
 const char* mqtt_server = "broker.hivemq.com";
@@ -77,7 +77,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 
   Serial.println("Pesan diterima: -> " + message);
-  Serial.println("IP Address: " + WiFi.localIP().toString());
 }
 
 // Fungsi untuk menghubungkan ke broker MQTT
@@ -221,7 +220,7 @@ void setup() {
   mySerial.begin(9600, SERIAL_8N1, 16, 17);
 
   setupWiFi();
-  setupMQTT();
+  // setupMQTT();
   initializeDFPlayer();
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
@@ -229,10 +228,10 @@ void setup() {
 
 void loop() {
   webSocket.loop();
-  if (!client.connected()) {
-    setupMQTT();
-  }
-  client.loop();
+  // if (!client.connected()) {
+  //   setupMQTT();
+  // }
+  // client.loop();
 
   // Kontrol motor berdasarkan nilai direction, steer, dan gas
   if (direction == "maju" && gass == "start") {
@@ -272,15 +271,15 @@ void loop() {
     digitalWrite(PUMP_RELAY_PIN, LOW);
   }
 
-  // Update jarak setiap 10 detik
-  if (millis() - lastDistanceUpdate > 1000) {
-    distance = readUltrasonicDistance();
-    Serial.println("Distance: " + String(distance) + " cm");
-    String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"fire\":\"" + fire + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
-    client.publish(topic_sensor, jsonData.c_str());
-    batre -= 1;
-    lastDistanceUpdate = millis();
-  }
+  // // Update jarak setiap 10 detik
+  // if (millis() - lastDistanceUpdate > 1000) {
+  //   distance = readUltrasonicDistance();
+  //   Serial.println("Distance: " + String(distance) + " cm");
+  //   String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"fire\":\"" + fire + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
+  //   client.publish(topic_sensor, jsonData.c_str());
+  //   batre -= 1;
+  //   lastDistanceUpdate = millis();
+  // }
 
 
   // if (distance < 50.0 && !isPlaying) {
