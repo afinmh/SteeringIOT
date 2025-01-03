@@ -184,6 +184,31 @@ float readUltrasonicDistance() {
   return distance;
 }
 
+void TaskWebSocket(void *parameter) {
+    for (;;) {
+        webSocket.loop();
+        delay(1);
+    }
+}
+
+void TaskMQTT(void *parameter) {
+    for (;;) {
+        if (!client.connected()) {
+            setupMQTT();
+        }
+        client.loop();
+        if (millis() - lastDistanceUpdate > 1000) {
+          distance = readUltrasonicDistance();
+          Serial.println("Distance: " + String(distance) + " cm");
+          String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"fire\":\"" + fire + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
+          client.publish(topic_sensor, jsonData.c_str());
+          batre -= 1;
+          lastDistanceUpdate = millis();
+        }
+        delay(1);
+    }
+}
+
 // Fungsi untuk menginisialisasi DFPlayer
 void initializeDFPlayer() {
   while (!isDFPlayerReady) {
@@ -221,13 +246,14 @@ void setup() {
 
   setupWiFi();
   // setupMQTT();
-  initializeDFPlayer();
+  // initializeDFPlayer();
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
+  xTaskCreatePinnedToCore(TaskWebSocket, "WebSocketTask", 10000, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(TaskMQTT, "MQTTTask", 10000, NULL, 1, NULL, 1);
 }
 
 void loop() {
-  webSocket.loop();
   // if (!client.connected()) {
   //   setupMQTT();
   // }
@@ -263,24 +289,18 @@ void loop() {
   }
 
   if (pompa == "ON") {
+    digitalWrite(ledPin, HIGH);
     digitalWrite(PUMP_RELAY_PIN, HIGH);
-  } else if (strobo == "ON") {
-    digitalWrite(STROBE_RELAY_PIN, HIGH);
-  } else {
-    digitalWrite(STROBE_RELAY_PIN, LOW);
+  } else if (pompa == "OFF") {
     digitalWrite(PUMP_RELAY_PIN, LOW);
   }
 
-  // // Update jarak setiap 10 detik
-  // if (millis() - lastDistanceUpdate > 1000) {
-  //   distance = readUltrasonicDistance();
-  //   Serial.println("Distance: " + String(distance) + " cm");
-  //   String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"fire\":\"" + fire + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
-  //   client.publish(topic_sensor, jsonData.c_str());
-  //   batre -= 1;
-  //   lastDistanceUpdate = millis();
-  // }
-
+  if (strobo == "ON") {
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(STROBE_RELAY_PIN, HIGH);
+  } else if (strobo == "OFF") {
+    digitalWrite(STROBE_RELAY_PIN, LOW);
+  }
 
   // if (distance < 50.0 && !isPlaying) {
   //   Serial.println("Jarak kurang dari 50 cm, memainkan musik 2...");

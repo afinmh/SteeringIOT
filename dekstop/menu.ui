@@ -6,120 +6,212 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>875</width>
-    <height>567</height>
+    <width>1922</width>
+    <height>1080</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="close">
-   <property name="geometry">
-    <rect>
-     <x>450</x>
-     <y>318</y>
-     <width>201</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">ackground-color: transparent;
-border-image: url(:off.png);
-background: none;
-border: none;
-background-repeat: none;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>game.png</normaloff>game.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>150</width>
-     <height>150</height>
-    </size>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="menu2">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>310</y>
-     <width>171</width>
-     <height>141</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">ackground-color: transparent;
-border-image: url(:off.png);
-background: none;
-border: none;
-background-repeat: none;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>game-play.png</normaloff>game-play.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>150</width>
-     <height>150</height>
-    </size>
-   </property>
-  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>881</width>
-     <height>571</height>
+     <width>1920</width>
+     <height>1080</height>
     </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Papyrus</family>
-    </font>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>mobil.jpg</pixmap>
+    <pixmap>forest-fire-8681951_1920.jpg</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QPushButton" name="exit">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>120</y>
-     <width>451</width>
-     <height>71</height>
+     <x>1450</x>
+     <y>870</y>
+     <width>81</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Century</family>
-     <pointsize>45</pointsize>
+     <family>Arial</family>
+     <pointsize>11</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border-radius: 15px;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    background-color: transparent; /* Latar belakang transparan */
+}
+
+QPushButton:pressed {
+    background-color: rgba(13, 47, 114, 0.4); /* Warna biru gelap dengan transparansi */
+    color: #fffffe;
+}
+
+QPushButton:hover:!pressed {
+    background-color: rgba(225, 244, 255, 0.3); /* Warna biru muda dengan transparansi */
+    color: #0c2f70;
+}
+
+QPushButton:disabled {
+    background-color: rgba(170, 170, 170, 0.2); /* Warna abu-abu dengan transparansi */
+    color: #ffffff;
+}
+</string>
+   </property>
    <property name="text">
-    <string>IoT Fire Fighter</string>
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>fire-exit.png</normaloff>fire-exit.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>68</width>
+     <height>68</height>
+    </size>
    </property>
   </widget>
-  <zorder>label</zorder>
-  <zorder>close</zorder>
-  <zorder>menu2</zorder>
-  <zorder>label_3</zorder>
+  <widget class="QPushButton" name="startt">
+   <property name="geometry">
+    <rect>
+     <x>1210</x>
+     <y>870</y>
+     <width>81</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border-radius: 15px;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    background-color: transparent; /* Latar belakang transparan */
+}
+
+QPushButton:pressed {
+    background-color: rgba(13, 47, 114, 0.4); /* Warna biru gelap dengan transparansi */
+    color: #fffffe;
+}
+
+QPushButton:hover:!pressed {
+    background-color: rgba(225, 244, 255, 0.3); /* Warna biru muda dengan transparansi */
+    color: #0c2f70;
+}
+
+QPushButton:disabled {
+    background-color: rgba(170, 170, 170, 0.2); /* Warna abu-abu dengan transparansi */
+    color: #ffffff;
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>vehicle.png</normaloff>vehicle.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>60</width>
+     <height>60</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="setting">
+   <property name="geometry">
+    <rect>
+     <x>1330</x>
+     <y>870</y>
+     <width>81</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+    border-radius: 15px;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    background-color: transparent; /* Latar belakang transparan */
+}
+
+QPushButton:pressed {
+    background-color: rgba(13, 47, 114, 0.4); /* Warna biru gelap dengan transparansi */
+    color: #fffffe;
+}
+
+QPushButton:hover:!pressed {
+    background-color: rgba(225, 244, 255, 0.3); /* Warna biru muda dengan transparansi */
+    color: #0c2f70;
+}
+
+QPushButton:disabled {
+    background-color: rgba(170, 170, 170, 0.2); /* Warna abu-abu dengan transparansi */
+    color: #ffffff;
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>tools-and-utensils.png</normaloff>tools-and-utensils.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>50</width>
+     <height>50</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>150</y>
+     <width>511</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>FZShuTi</family>
+     <pointsize>65</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+     <underline>false</underline>
+     <strikeout>false</strikeout>
+     <stylestrategy>PreferDefault</stylestrategy>
+    </font>
+   </property>
+   <property name="tabletTracking">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>PADAMIN</string>
+   </property>
+   <property name="indent">
+    <number>-3</number>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

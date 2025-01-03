@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>891</width>
-    <height>529</height>
+    <width>1920</width>
+    <height>1080</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,68 +16,103 @@
   <widget class="QPushButton" name="kanan">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>410</y>
-     <width>71</width>
-     <height>71</height>
+     <x>400</x>
+     <y>790</y>
+     <width>101</width>
+     <height>101</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">ackground-color: transparent;
-border-image: url(:off.png);
-background: none;
-border: none;
-background-repeat: none;</string>
+    <string notr="true">QPushButton {
+    border-radius: 15px;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    background-color: transparent; /* Latar belakang transparan */
+}
+
+QPushButton:pressed {
+    background-color: rgba(13, 47, 114, 0.4); /* Warna biru gelap dengan transparansi */
+    color: #fffffe;
+}
+
+QPushButton:hover:!pressed {
+    background-color: rgba(169, 169, 169, 0.8); /* Warna abu-abu dengan transparansi */
+    color: #ffffff; /* Warna teks putih untuk kontras */
+}
+
+QPushButton:disabled {
+    background-color: rgba(170, 170, 170, 0.2); /* Warna abu-abu dengan transparansi */
+    color: #ffffff;
+}
+</string>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>kanan.png</normaloff>kanan.png</iconset>
+     <normaloff>arrow-right (3).png</normaloff>arrow-right (3).png</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>70</width>
-     <height>70</height>
+     <width>100</width>
+     <height>100</height>
     </size>
    </property>
   </widget>
   <widget class="QPushButton" name="kiri">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>410</y>
-     <width>71</width>
-     <height>71</height>
+     <x>210</x>
+     <y>790</y>
+     <width>101</width>
+     <height>101</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">ackground-color: transparent;
-border-image: url(:off.png);
-background: none;
-border: none;
-background-repeat: none;</string>
+    <string notr="true">QPushButton {
+    border-radius: 15px;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    background-color: transparent; /* Latar belakang transparan */
+}
+
+QPushButton:pressed {
+    background-color: rgba(13, 47, 114, 0.4); /* Warna biru gelap dengan transparansi */
+    color: #fffffe;
+}
+
+QPushButton:hover:!pressed {
+    background-color: rgba(169, 169, 169, 0.8); /* Warna abu-abu dengan transparansi */
+    color: #ffffff; /* Warna teks putih untuk kontras */
+}
+
+QPushButton:disabled {
+    background-color: rgba(170, 170, 170, 0.2); /* Warna abu-abu dengan transparansi */
+    color: #ffffff;
+}
+
+</string>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>kiri.png</normaloff>kiri.png</iconset>
+     <normaloff>arrow-right (2).png</normaloff>arrow-right (2).png</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>70</width>
-     <height>70</height>
+     <width>100</width>
+     <height>100</height>
     </size>
    </property>
   </widget>
   <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>430</y>
+     <x>900</x>
+     <y>850</y>
      <width>151</width>
      <height>41</height>
     </rect>
@@ -86,28 +121,55 @@ background-repeat: none;</string>
     <number>24</number>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QLCDNumber" name="lcdNumber">
    <property name="geometry">
     <rect>
-     <x>800</x>
-     <y>200</y>
-     <width>51</width>
-     <height>61</height>
+     <x>900</x>
+     <y>700</y>
+     <width>131</width>
+     <height>71</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="kembali">
+   <property name="geometry">
+    <rect>
+     <x>1770</x>
+     <y>30</y>
+     <width>101</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">ackground-color: transparent;
-border-image: url(:off.png);
-background: none;
-border: none;
-background-repeat: none;</string>
+    <string notr="true">QPushButton {
+    border-radius: 15px;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    background-color: transparent; /* Latar belakang transparan */
+}
+
+QPushButton:pressed {
+    background-color: rgba(13, 47, 114, 0.4); /* Warna biru gelap dengan transparansi */
+    color: #fffffe;
+}
+
+QPushButton:hover:!pressed {
+    background-color: rgba(169, 169, 169, 0.8); /* Warna abu-abu dengan transparansi */
+    color: #ffffff; /* Warna teks putih untuk kontras */
+}
+
+QPushButton:disabled {
+    background-color: rgba(170, 170, 170, 0.2); /* Warna abu-abu dengan transparansi */
+    color: #ffffff;
+}
+</string>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>logout.png</normaloff>logout.png</iconset>
+     <normaloff>left.png</normaloff>left.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -116,94 +178,135 @@ background-repeat: none;</string>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="gas">
    <property name="geometry">
     <rect>
-     <x>750</x>
-     <y>410</y>
+     <x>1690</x>
+     <y>720</y>
      <width>71</width>
-     <height>71</height>
+     <height>161</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">ackground-color: transparent;
-border-image: url(:off.png);
-background: none;
-border: none;
-background-repeat: none;</string>
+    <string notr="true">QPushButton {
+    border-radius: 15px;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    background-color: transparent; /* Latar belakang transparan */
+}
+
+QPushButton:pressed {
+    background-color: rgba(13, 47, 114, 0.4); /* Warna biru gelap dengan transparansi */
+    color: #fffffe;
+}
+
+QPushButton:hover:!pressed {
+    background-color: rgba(225, 244, 255, 0.3); /* Warna biru muda dengan transparansi */
+    color: #0c2f70;
+}
+
+QPushButton:disabled {
+    background-color: rgba(170, 170, 170, 0.2); /* Warna abu-abu dengan transparansi */
+    color: #ffffff;
+}
+</string>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>gas.png</normaloff>gas.png</iconset>
+     <normaloff>pedal gas.png</normaloff>pedal gas.png</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>70</width>
-     <height>70</height>
+     <width>150</width>
+     <height>150</height>
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="rem">
    <property name="geometry">
     <rect>
-     <x>650</x>
-     <y>410</y>
+     <x>1590</x>
+     <y>750</y>
      <width>71</width>
-     <height>71</height>
+     <height>131</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">ackground-color: transparent;
-border-image: url(:off.png);
-background: none;
-border: none;
-background-repeat: none;</string>
+    <string notr="true">QPushButton {
+    border-radius: 15px;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    background-color: transparent; /* Latar belakang transparan */
+}
+
+QPushButton:pressed {
+    background-color: rgba(13, 47, 114, 0.4); /* Warna biru gelap dengan transparansi */
+    color: #fffffe;
+}
+
+QPushButton:hover:!pressed {
+    background-color: rgba(225, 244, 255, 0.3); /* Warna biru muda dengan transparansi */
+    color: #0c2f70;
+}
+
+QPushButton:disabled {
+    background-color: rgba(170, 170, 170, 0.2); /* Warna abu-abu dengan transparansi */
+    color: #ffffff;
+}
+</string>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>rem.png</normaloff>rem.png</iconset>
+     <normaloff>pedal remm.png</normaloff>pedal remm.png</iconset>
    </property>
    <property name="iconSize">
     <size>
-     <width>70</width>
-     <height>70</height>
+     <width>120</width>
+     <height>120</height>
     </size>
    </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>0</y>
-     <width>871</width>
-     <height>511</height>
+     <x>1920</x>
+     <y>1080</y>
+     <width>55</width>
+     <height>16</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <pointsize>20</pointsize>
-    </font>
-   </property>
    <property name="text">
-    <string>Camera</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <string/>
    </property>
   </widget>
-  <zorder>label</zorder>
+  <widget class="QLabel" name="kamera">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>1920</width>
+     <height>1080</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>CAMERA</string>
+   </property>
+  </widget>
+  <zorder>kamera</zorder>
   <zorder>kanan</zorder>
   <zorder>kiri</zorder>
   <zorder>progressBar</zorder>
-  <zorder>pushButton_3</zorder>
-  <zorder>pushButton</zorder>
-  <zorder>pushButton_2</zorder>
+  <zorder>lcdNumber</zorder>
+  <zorder>kembali</zorder>
+  <zorder>gas</zorder>
+  <zorder>rem</zorder>
+  <zorder>label</zorder>
  </widget>
  <resources/>
  <connections/>

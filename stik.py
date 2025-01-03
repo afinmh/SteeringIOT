@@ -3,7 +3,7 @@ import time
 import websocket
 import json
 
-WS_URL = "ws://192.168.1.243:81" 
+WS_URL = "ws://192.168.1.13:81" 
 
 pygame.init()
 pygame.joystick.init()

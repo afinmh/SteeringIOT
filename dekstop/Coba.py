@@ -14,16 +14,15 @@ class ShowImage(QDialog):
         self.capture_image = None
         self.cap = None
         self.timer = QtCore.QTimer(self)
-        self.setWindowFlags(Qt.FramelessWindowHint)
-        self.close.clicked.connect(self.closetab)
-        self.menu2.clicked.connect(self.controller)
+        self.exit.clicked.connect(self.closetab)
+        self.startt.clicked.connect(self.controller)
         
     def closetab(self):
         sys.exit(app.exec_())
         
     def controller(self):
         self.menu2_window = QDialog()  # Membuat instance QDialog
-        loadUi('menu2.ui', self.menu2_window)  # Memuat file menu2.ui
+        loadUi('setir.ui', self.menu2_window)  # Memuat file menu2.ui
         self.menu2_window.setWindowFlags(Qt.FramelessWindowHint)
         self.menu2_window.showMaximized()  # Membuka dalam mode maximized
         self.menu2_window.setWindowTitle('Menu 2')  # (Opsional) Mengatur judul
@@ -31,5 +30,4 @@ class ShowImage(QDialog):
 
 app = QtWidgets.QApplication(sys.argv)
 window = ShowImage()
-window.showMaximized()
 sys.exit(app.exec_())
