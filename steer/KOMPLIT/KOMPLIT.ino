@@ -2,20 +2,19 @@
 #include <PubSubClient.h>
 #include <HTTPClient.h>
 #include <DFRobotDFPlayerMini.h>
-#include <WebSocketsServer.h>
+#include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 
 // Konfigurasi WiFi
-const char* ssid = "ICT-LAB WORKSPACE";
-const char* password = "ICTLAB2024";
+const char* ssid = "Wong Ayu";
+const char* password = "4sehat5sempurna";
 
 // Konfigurasi MQTT
 const char* mqtt_server = "broker.hivemq.com";
 const int mqtt_port = 1883;
 const char* topic_sensor = "motorffitenass/sensor";
 
-// Objek WiFi, MQTT, dan Web Server
-WebSocketsServer webSocket = WebSocketsServer(81);
+WebSocketsClient webSocket;
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -154,22 +153,23 @@ void handleWebSocketMessage(uint8_t num, uint8_t* payload, size_t length) {
 }
 
 
-// Fungsi untuk menangani event WebSocket
-void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
+void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
   switch (type) {
-    case WStype_TEXT:
-      handleWebSocketMessage(num, payload, length);
+    case WStype_CONNECTED:
+      webSocket.sendTXT("{\"type\": \"receiver\"}");
+      Serial.println("Connected to WebSocket server.");
       break;
     case WStype_DISCONNECTED:
-      Serial.println("Client disconnected");
+      Serial.println("Disconnected from WebSocket server.");
       break;
-    case WStype_CONNECTED:
-      Serial.println("Client connected");
+    case WStype_TEXT:
+      handleWebSocketMessage(0, payload, length);
       break;
     default:
       break;
   }
 }
+
 
 // Fungsi membaca jarak dari sensor ultrasonik
 float readUltrasonicDistance() {
@@ -247,8 +247,8 @@ void setup() {
   setupWiFi();
   // setupMQTT();
   // initializeDFPlayer();
-  webSocket.begin();
-  webSocket.onEvent(onWebSocketEvent);
+  webSocket.begin("192.168.1.10", 8765, "/");
+  webSocket.onEvent(webSocketEvent);
   xTaskCreatePinnedToCore(TaskWebSocket, "WebSocketTask", 10000, NULL, 1, NULL, 0);
   xTaskCreatePinnedToCore(TaskMQTT, "MQTTTask", 10000, NULL, 1, NULL, 1);
 }
