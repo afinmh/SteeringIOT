@@ -1,16 +1,14 @@
 const WebSocket = require('ws');
 
-// Membuat server WebSocket
 const wss = new WebSocket.Server({ port: 8765
  });
 
-let senderClient = null; // Klien pengirim
-let receiverClient = null; // Klien penerima
+let senderClient = null;
+let receiverClient = null;
 
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
-  // Menentukan tipe klien: pengirim atau penerima
   ws.on('message', (message) => {
     try {
       const data = JSON.parse(message);
@@ -24,7 +22,7 @@ wss.on('connection', (ws) => {
         console.log('Receiver client connected');
         ws.send(JSON.stringify({ status: 'Receiver registered' }));
       } else if (senderClient === ws) {
-        // Mengirim data ke klien penerima jika tersedia
+
         if (receiverClient) {
           receiverClient.send(JSON.stringify({ topic: data.topic, value: data.value }));
           console.log(`Forwarded to receiver: ${message}`);
@@ -37,7 +35,6 @@ wss.on('connection', (ws) => {
     }
   });
 
-  // Menangani disconnect
   ws.on('close', () => {
     console.log('Client disconnected');
     if (ws === senderClient) senderClient = null;

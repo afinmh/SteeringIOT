@@ -3,7 +3,7 @@ import time
 import websocket
 import json
 
-WS_URL = "ws://192.168.1.243:81" 
+WS_URL = "ws://192.168.1.236:8765"
 pygame.init()
 pygame.joystick.init()
 
@@ -18,6 +18,7 @@ print(f"Joystick terdeteksi: {joystick.get_name()}")
 try:
     ws = websocket.create_connection(WS_URL)
     print("Terhubung ke WebSocket!")
+    ws.send(json.dumps({"type": "sender"}))
 except Exception as e:
     print(f"Gagal terhubung ke WebSocket: {e}")
     exit()
