@@ -59,7 +59,7 @@ def control_motor():
                     print(f"Telolet {music}")   
                 button_pressed = True
 
-            if joystick.get_button(4): #Tangan Kanan
+            if joystick.get_button(6): #Tangan Kanan
                 if not button_pressed:
                     if music < 7:
                         music += 1
@@ -67,7 +67,7 @@ def control_motor():
                     button_pressed = True
 
         
-            if joystick.get_button(5): #Tangan Kiri
+            if joystick.get_button(7): #Tangan Kiri
                 if not button_pressed:
                     if music > 3:
                         music -= 1

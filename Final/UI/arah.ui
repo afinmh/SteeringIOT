@@ -51,7 +51,7 @@ QPushButton:disabled {
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>arrow-right (3).png</normaloff>arrow-right (3).png</iconset>
+     <normaloff>../../../../../../Downloads/Dekstop/arrow-right (3).png</normaloff>../../../../../../Downloads/Dekstop/arrow-right (3).png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -99,7 +99,7 @@ QPushButton:disabled {
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>arrow-right (2).png</normaloff>arrow-right (2).png</iconset>
+     <normaloff>../../../../../../Downloads/Dekstop/arrow-right (2).png</normaloff>../../../../../../Downloads/Dekstop/arrow-right (2).png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -131,7 +131,7 @@ QPushButton:disabled {
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="kembali">
+  <widget class="QPushButton" name="backk">
    <property name="geometry">
     <rect>
      <x>1770</x>
@@ -169,7 +169,7 @@ QPushButton:disabled {
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>left.png</normaloff>left.png</iconset>
+     <normaloff>../../../../../../Downloads/Dekstop/left.png</normaloff>../../../../../../Downloads/Dekstop/left.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -216,7 +216,7 @@ QPushButton:disabled {
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>pedal gas.png</normaloff>pedal gas.png</iconset>
+     <normaloff>../../../../../../Downloads/Dekstop/pedal gas.png</normaloff>../../../../../../Downloads/Dekstop/pedal gas.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -263,7 +263,7 @@ QPushButton:disabled {
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>pedal remm.png</normaloff>pedal remm.png</iconset>
+     <normaloff>../../../../../../Downloads/Dekstop/pedal remm.png</normaloff>../../../../../../Downloads/Dekstop/pedal remm.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -303,7 +303,7 @@ QPushButton:disabled {
   <zorder>kiri</zorder>
   <zorder>progressBar</zorder>
   <zorder>lcdNumber</zorder>
-  <zorder>kembali</zorder>
+  <zorder>backk</zorder>
   <zorder>gas</zorder>
   <zorder>rem</zorder>
   <zorder>label</zorder>

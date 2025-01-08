@@ -9,7 +9,7 @@ import pygame
 import websocket
 import json
 
-WS_URL = "ws://192.168.1.6:8765"
+WS_URL = "ws://192.168.1.236:8765"
 
 pygame.init()
 pygame.joystick.init()
@@ -26,7 +26,7 @@ key = ""
 class ShowImage(QDialog):
     def __init__(self):
         super(ShowImage, self).__init__()
-        loadUi('UI/menu.ui', self)
+        loadUi('UI/protomenu.ui', self)
         self.Image = None
         self.capture_image = None
         self.cap = None
@@ -43,6 +43,8 @@ class ShowImage(QDialog):
 
         if joystick_name == "USB Joystick":
             self.checkstir.setEnabled(False) 
+        elif joystick_name == "Logitech G HUB G923 Racing Wheel for PlayStation 4 and PC (USB)":
+            self.checkstik.setEnabled(False)
 
     def stir(self, state):
         global key
@@ -74,7 +76,7 @@ class ShowImage(QDialog):
 class Menu2(QDialog):
     def __init__(self, main_menu):
         super(Menu2, self).__init__()
-        loadUi('UI/arah.ui', self)
+        loadUi('UI/protocontrol.ui', self)
         self.main_menu = main_menu
         self.cap = None
         self.timer = QtCore.QTimer(self)
@@ -253,7 +255,7 @@ class Menu2(QDialog):
                 if not joystick.get_button(6) and not joystick.get_button(7) and not joystick.get_button(1)  and not joystick.get_button(3)  and not joystick.get_button(0) and not joystick.get_button(2):
                     button_pressed = False
 
-    def controlStir(self):
+    def controlSteer(self):
         global gas_status, steer, direction, running, music, button_pressed, pompa, strobo, joystick, pygame
         
         while True:

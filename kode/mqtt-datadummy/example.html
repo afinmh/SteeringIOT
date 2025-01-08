@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Websockets Using JavaScript MQTT Client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="mqttws31.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var connected_flag = 0;
+        var mqtt;
+        var reconnectTimeout = 2000;
+        var host = "broker.hivemq.com";
+        var port = 8000;
+
+        function onConnectionLost() {
+            console.log("Connection lost");
+            document.getElementById("status").innerHTML = "Connection Lost";
+            document.getElementById("messages").innerHTML = "Connection Lost";
+            connected_flag = 0;
+        }
+
+        function onFailure(message) {
+            console.log("Failed");
+            document.getElementById("messages").innerHTML = "Connection Failed - Retrying";
+            setTimeout(MQTTconnect, reconnectTimeout);
+        }
+
+        function onMessageArrived(r_message) {
+            let payload = JSON.parse(r_message.payloadString);
+            if (r_message.destinationName === "motorffitenass/sensor") {
+                // Update the elements with new data
+                document.getElementById("pompa").innerHTML = "Pompa: " + payload.pompa;
+                document.getElementById("strobo").innerHTML = "Strobo: " + payload.strobo;
+                document.getElementById("speaker").innerHTML = "Speaker: " + payload.speaker;
+                document.getElementById("fire").innerHTML = "Fire: " + payload.fire;
+                document.getElementById("batre").innerHTML = "Batre: " + payload.batre + "%";
+                document.getElementById("distance").innerHTML = "Distance: " + payload.distance + " cm";
+            }
+
+            // Debugging message for confirmation
+            document.getElementById("messages").innerHTML = "Message received on topic: " + r_message.destinationName;
+        }
+
+        function onConnect() {
+            document.getElementById("messages").innerHTML = "Connected to " + host + " on port " + port;
+            connected_flag = 1;
+            document.getElementById("status").innerHTML = "Connected";
+            console.log("Connected");
+
+            // Subscribe to the new topic
+            mqtt.subscribe("motorffitenass/sensor");
+        }
+
+        function MQTTconnect() {
+            document.getElementById("messages").innerHTML = "";
+            console.log("Connecting to " + host + ":" + port);
+
+            let clientId = "clientId-" + Math.floor(Math.random() * 10000);
+            mqtt = new Paho.MQTT.Client(host, port, clientId);
+
+            let options = {
+                timeout: 3,
+                onSuccess: onConnect,
+                onFailure: onFailure,
+            };
+
+            mqtt.onConnectionLost = onConnectionLost;
+            mqtt.onMessageArrived = onMessageArrived;
+
+            mqtt.connect(options);
+        }
+
+        window.onload = function () {
+            MQTTconnect();
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Monitoring PADAMIN</h1>
+    <div id="status">Connection Status: Not Connected</div>
+    <hr>
+    <div id="pompa">Pompa: -</div>
+    <div id="strobo">Strobo: -</div>
+    <div id="speaker">Speaker: -</div>
+    <div id="fire">Status Api: -</div>
+    <div id="batre">Batre: -</div>
+    <div id="distance">Distance: -</div>
+    <hr>
+    <div id="messages">Messages will appear here...</div>
+</body>
+</html>
