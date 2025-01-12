@@ -43,14 +43,14 @@ bool isDFPlayerReady = false;
 
 // Status kontrol
 String steer = "";
-String direction = "";  // "maju" atau "mundur"
+String direction = "";
 String gass = "";
 String pompa = "OFF";
 String strobo = "OFF";
 String speaker = "OFF";
 String fire = "Aman";
 int batre = 100;
-float distance = 0.0; // Variabel jarak
+float distance = 0.0;
 unsigned long lastBatreUpdate = 0;
 unsigned long lastDistanceUpdate = 0; // Waktu pembaruan terakhir
 
@@ -210,8 +210,8 @@ void TaskMQTT(void *parameter) {
           lastDistanceUpdate = millis();
         }
 
-        if (millis() - lastBatreUpdate > 15000) {
-          if (batre > 0) { // Pastikan baterai tidak negatif
+        if (millis() - lastBatreUpdate > 30000) {
+          if (batre > 0) {
           batre -= 1; 
           Serial.println("Batre updated: " + String(batre));
           }
@@ -266,10 +266,11 @@ void setup() {
 }
 
 void loop() {
-  // if (!client.connected()) {
-  //   setupMQTT();
-  // }
-  // client.loop();
+  webSocket.loop();
+  if (!client.connected()) {
+    setupMQTT();
+  }
+  client.loop();
 
   // Kontrol motor berdasarkan nilai direction, steer, dan gas
   if (direction == "maju" && gass == "start") {
