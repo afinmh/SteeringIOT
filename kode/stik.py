@@ -4,7 +4,7 @@ import websocket
 import json
 
 
-WS_URL = "ws://192.168.1.236:8765"
+WS_URL = "ws://127.0.0.1:8765"
 
 
 pygame.init()

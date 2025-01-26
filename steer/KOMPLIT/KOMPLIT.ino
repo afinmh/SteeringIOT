@@ -6,8 +6,8 @@
 #include <ArduinoJson.h>
 
 // Konfigurasi WiFi
-const char* ssid = "ICT-LAB WORKSPACE";
-const char* password = "ICTLAB2024";
+const char* ssid = "Wong Ayu";
+const char* password = "4sehat5sempurna";
 
 // Konfigurasi MQTT
 const char* mqtt_server = "broker.hivemq.com";
@@ -43,15 +43,14 @@ bool isDFPlayerReady = false;
 
 // Status kontrol
 String steer = "";
-String direction = "";
+String direction = "";  // "maju" atau "mundur"
 String gass = "";
 String pompa = "OFF";
 String strobo = "OFF";
 String speaker = "OFF";
 String fire = "Aman";
 int batre = 100;
-float distance = 0.0;
-unsigned long lastBatreUpdate = 0;
+float distance = 0.0; // Variabel jarak
 unsigned long lastDistanceUpdate = 0; // Waktu pembaruan terakhir
 
 // Fungsi untuk menghubungkan ke WiFi
@@ -130,10 +129,6 @@ void handleWebSocketMessage(uint8_t num, uint8_t* payload, size_t length) {
   } else if (String(topic) == "steer") {
     steer = String(value);
     Serial.println("Steering set to: " + steer);
-  } else if (String(topic) == "batre") {
-    String valueBatre = String(value);
-    int batre = valueBatre.toInt();
-    Serial.println("Batre: " + batre);
   } else if (String(topic) == "fire") {
     fire = String(value);
     Serial.println("Deteksi: " + fire);
@@ -207,15 +202,8 @@ void TaskMQTT(void *parameter) {
           Serial.println("Distance: " + String(distance) + " cm");
           String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"fire\":\"" + fire + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
           client.publish(topic_sensor, jsonData.c_str());
+          batre -= 1;
           lastDistanceUpdate = millis();
-        }
-
-        if (millis() - lastBatreUpdate > 30000) {
-          if (batre > 0) {
-          batre -= 1; 
-          Serial.println("Batre updated: " + String(batre));
-          }
-          lastBatreUpdate = millis();
         }
         delay(1);
     }
@@ -251,26 +239,25 @@ void setup() {
   pinMode(STROBE_RELAY_PIN, OUTPUT);
 
   // Pastikan relay awalnya dalam keadaan off
-  digitalWrite(PUMP_RELAY_PIN, HIGH);
-  digitalWrite(STROBE_RELAY_PIN, HIGH);
+  digitalWrite(PUMP_RELAY_PIN, LOW);
+  digitalWrite(STROBE_RELAY_PIN, LOW);
 
   mySerial.begin(9600, SERIAL_8N1, 16, 17);
 
   setupWiFi();
-  setupMQTT();
-  initializeDFPlayer();
-  webSocket.begin("192.168.1.236", 8765, "/");
+  // setupMQTT();
+  // initializeDFPlayer();
+  webSocket.begin("192.168.1.6", 8765, "/");
   webSocket.onEvent(webSocketEvent);
   xTaskCreatePinnedToCore(TaskWebSocket, "WebSocketTask", 10000, NULL, 1, NULL, 0);
   xTaskCreatePinnedToCore(TaskMQTT, "MQTTTask", 10000, NULL, 1, NULL, 1);
 }
 
 void loop() {
-  webSocket.loop();
-  if (!client.connected()) {
-    setupMQTT();
-  }
-  client.loop();
+  // if (!client.connected()) {
+  //   setupMQTT();
+  // }
+  // client.loop();
 
   // Kontrol motor berdasarkan nilai direction, steer, dan gas
   if (direction == "maju" && gass == "start") {
@@ -303,16 +290,16 @@ void loop() {
 
   if (pompa == "ON") {
     digitalWrite(ledPin, HIGH);
-    digitalWrite(PUMP_RELAY_PIN, LOW);
-  } else if (pompa == "OFF") {
     digitalWrite(PUMP_RELAY_PIN, HIGH);
+  } else if (pompa == "OFF") {
+    digitalWrite(PUMP_RELAY_PIN, LOW);
   }
 
   if (strobo == "ON") {
     digitalWrite(ledPin, HIGH);
-    digitalWrite(STROBE_RELAY_PIN, LOW);
-  } else if (strobo == "OFF") {
     digitalWrite(STROBE_RELAY_PIN, HIGH);
+  } else if (strobo == "OFF") {
+    digitalWrite(STROBE_RELAY_PIN, LOW);
   }
 
   if (distance < 50.0 && !isPlaying) {
