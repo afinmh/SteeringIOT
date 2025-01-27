@@ -138,7 +138,7 @@ async def send_message():
             if not joystick.get_button(6) and not joystick.get_button(7) and not joystick.get_button(1) and not joystick.get_button(3) and not joystick.get_button(0) and not joystick.get_button(2):
                 button_pressed = False
 
-            await asyncio.sleep(0.000000000001)  # Interval kecil untuk mencegah pembacaan berlebihan
+            await asyncio.sleep(0) 
 
 # Menjalankan program
 asyncio.get_event_loop().run_until_complete(send_message())
