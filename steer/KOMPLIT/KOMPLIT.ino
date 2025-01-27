@@ -184,30 +184,23 @@ float readUltrasonicDistance() {
   return distance;
 }
 
-void TaskWebSocket(void *parameter) {
-    for (;;) {
-        webSocket.loop();
-        delay(1);
-    }
-}
-
-void TaskMQTT(void *parameter) {
-    for (;;) {
-        if (!client.connected()) {
-            setupMQTT();
-        }
-        client.loop();
-        if (millis() - lastDistanceUpdate > 1000) {
-          distance = readUltrasonicDistance();
-          Serial.println("Distance: " + String(distance) + " cm");
-          String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"fire\":\"" + fire + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
-          client.publish(topic_sensor, jsonData.c_str());
-          batre -= 1;
-          lastDistanceUpdate = millis();
-        }
-        delay(1);
-    }
-}
+// void TaskMQTT(void *parameter) {
+//     for (;;) {
+//         if (!client.connected()) {
+//             setupMQTT();
+//         }
+//         client.loop();
+//         if (millis() - lastDistanceUpdate > 1000) {
+//           distance = readUltrasonicDistance();
+//           Serial.println("Distance: " + String(distance) + " cm");
+//           String jsonData = "{\"pompa\":\"" + pompa + "\",\"strobo\":\"" + strobo + "\",\"speaker\":\"" + speaker + "\",\"fire\":\"" + fire + "\",\"batre\":\"" + batre + "\",\"distance\":" + distance + "}";
+//           client.publish(topic_sensor, jsonData.c_str());
+//           batre -= 1;
+//           lastDistanceUpdate = millis();
+//         }
+//         delay(1);
+//     }
+// }
 
 // Fungsi untuk menginisialisasi DFPlayer
 void initializeDFPlayer() {
@@ -247,17 +240,16 @@ void setup() {
   setupWiFi();
   // setupMQTT();
   // initializeDFPlayer();
-  webSocket.begin("192.168.1.6", 8765, "/");
+  webSocket.beginSSL("dusty-steel-atlasaurus.glitch.me", 443, "/");
   webSocket.onEvent(webSocketEvent);
-  xTaskCreatePinnedToCore(TaskWebSocket, "WebSocketTask", 10000, NULL, 1, NULL, 0);
-  xTaskCreatePinnedToCore(TaskMQTT, "MQTTTask", 10000, NULL, 1, NULL, 1);
 }
 
 void loop() {
-  // if (!client.connected()) {
-  //   setupMQTT();
-  // }
-  // client.loop();
+  if (!client.connected()) {
+    setupMQTT();
+  }
+  client.loop();
+  webSocket.loop();
 
   // Kontrol motor berdasarkan nilai direction, steer, dan gas
   if (direction == "maju" && gass == "start") {
